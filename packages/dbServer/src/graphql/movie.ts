@@ -10,15 +10,16 @@ const typeDefs = gql`
     released: String
   }
   extend type Query {
-    movies: [Movie]
+    movies(limit: Int, offset: Int): [Movie!]!
   }
 `;
 
 // Movie resolvers
 const resolvers = {
   Query: {
-    movies: () => {
-      return Movie.find({}).limit(100);
+    movies: (_root: any, args: any) => {
+      console.log(args);
+      return Movie.find({}).skip(args.offset).limit(args.limit);
     },
   },
 };
