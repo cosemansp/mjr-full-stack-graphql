@@ -8,7 +8,7 @@ const typeDefs = gql`
     id: ID
     title: String
     plot: String
-    released: String
+    released: DateTime
   }
   extend type Query {
     movies(limit: Int, offset: Int): [Movie!]!
@@ -18,7 +18,6 @@ const typeDefs = gql`
 const movieMapper = (model: IMovie): Movie => {
   return {
     ...model,
-    released: model.released.toISOString(),
   };
 };
 

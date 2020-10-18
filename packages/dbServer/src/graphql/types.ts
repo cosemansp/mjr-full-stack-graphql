@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
@@ -9,6 +9,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  DateTime: Date;
 };
 
 export type Book = {
@@ -34,8 +35,9 @@ export type Movie = {
   id?: Maybe<Scalars['ID']>;
   title?: Maybe<Scalars['String']>;
   plot?: Maybe<Scalars['String']>;
-  released?: Maybe<Scalars['String']>;
+  released?: Maybe<Scalars['DateTime']>;
 };
+
 
 
 
@@ -121,6 +123,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Movie: ResolverTypeWrapper<Movie>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
@@ -132,6 +135,7 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'];
   Movie: Movie;
   ID: Scalars['ID'];
+  DateTime: Scalars['DateTime'];
   Boolean: Scalars['Boolean'];
 };
 
@@ -150,14 +154,19 @@ export type MovieResolvers<ContextType = any, ParentType extends ResolversParent
   id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   plot?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  released?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  released?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
+
+export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
+  name: 'DateTime';
+}
 
 export type Resolvers<ContextType = any> = {
   Book?: BookResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Movie?: MovieResolvers<ContextType>;
+  DateTime?: GraphQLScalarType;
 };
 
 
