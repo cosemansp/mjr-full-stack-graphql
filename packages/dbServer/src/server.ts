@@ -1,7 +1,8 @@
 import express, { Request, Response } from 'express';
 import { Server } from 'http';
-import { ApolloServer, gql } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-express';
 import { connectDb, closeDb } from './db';
+import { resolvers, typeDefs } from './graphql';
 
 import pkg from '../package.json';
 
@@ -14,30 +15,6 @@ app.get('/', (req: Request, res: Response) => {
     name: pkg.name,
   });
 });
-
-const books = [
-  { title: 'The Awakening', author: 'Kate Chopin' },
-  { title: 'City of Glass', author: 'Paul Auster' },
-];
-
-// Create the graphql schema
-const typeDefs = gql`
-  type Book {
-    title: String
-    author: String
-  }
-
-  type Query {
-    books: [Book]
-  }
-`;
-
-// Add resolvers (matching schema)
-const resolvers = {
-  Query: {
-    books: () => books,
-  },
-};
 
 // Create the Apollo Graphql server
 const graphqlServer = new ApolloServer({
@@ -53,7 +30,7 @@ connectDb().then(async () => {
   // Listen to http
   const PORT = 8000;
   httpServer = app.listen(PORT, () => {
-    console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
+    console.log(`⚡️[server]: Server is running at http://localhost:${PORT}${graphqlServer.graphqlPath}`);
   });
 });
 
