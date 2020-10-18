@@ -9,6 +9,14 @@ module.exports = {
   settings: {
     'import/resolver': {
       node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+      },
+    },
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.ts'],
+    },
+    'import/resolver': {
+      node: {
         extensions: ['.js', '.ts'],
       },
     },
@@ -20,6 +28,17 @@ module.exports = {
     jest: true,
   },
   rules: {
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        js: 'never',
+        mjs: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
+      },
+    ],
     // Typescript issues
     'no-unused-vars': 'off',
     'lines-between-class-members': 'off',

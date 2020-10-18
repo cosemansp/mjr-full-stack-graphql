@@ -26,5 +26,5 @@
     // Make it yourself a little easy
     "strictNullChecks": false
   },
-  "include": ["src", "test/global.d.ts"]
+  "include": ["src"]
 }

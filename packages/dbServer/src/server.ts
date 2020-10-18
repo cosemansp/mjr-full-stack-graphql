@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { ApolloServer, gql } from 'apollo-server-express';
-import { buildFederatedSchema } from '@apollo/federation';
+import { connectDb } from './db';
+
 import pkg from '../package.json';
 
 const app = express();
@@ -39,16 +40,17 @@ const resolvers = {
 
 // Create the Apollo Graphql server
 const server = new ApolloServer({
-  // typeDefs,
-  // resolvers,
-  schema: buildFederatedSchema([{ typeDefs, resolvers }]),
+  typeDefs,
+  resolvers,
 });
 
 // Attach graphql to express
 server.applyMiddleware({ app });
 
-// Listen to http
-const PORT = 8000;
-app.listen(PORT, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
+connectDb().then(async () => {
+  // Listen to http
+  const PORT = 8000;
+  app.listen(PORT, () => {
+    console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
+  });
 });
