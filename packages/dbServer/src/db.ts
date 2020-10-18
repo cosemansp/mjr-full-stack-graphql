@@ -1,7 +1,5 @@
 import mongoose from 'mongoose';
 
-import Movie from './models/movie';
-
 const url = 'mongodb://127.0.0.1/sample_mflix';
 const connectDb = () => {
   return mongoose.connect(url, {
@@ -10,8 +8,8 @@ const connectDb = () => {
   });
 };
 
-const models = { Movie };
+const closeDb = () => {
+  return mongoose.connection.close();
+};
 
-export { connectDb };
-
-export default models;
+export { connectDb, closeDb };

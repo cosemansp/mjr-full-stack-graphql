@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
+import { Server } from 'http';
 import { ApolloServer, gql } from 'apollo-server-express';
-import { connectDb } from './db';
+import { connectDb, closeDb } from './db';
 
 import pkg from '../package.json';
 
@@ -39,18 +40,28 @@ const resolvers = {
 };
 
 // Create the Apollo Graphql server
-const server = new ApolloServer({
+const graphqlServer = new ApolloServer({
   typeDefs,
   resolvers,
 });
 
 // Attach graphql to express
-server.applyMiddleware({ app });
+graphqlServer.applyMiddleware({ app });
 
+let httpServer: Server;
 connectDb().then(async () => {
   // Listen to http
   const PORT = 8000;
-  app.listen(PORT, () => {
+  httpServer = app.listen(PORT, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT received');
+  httpServer.close(() => {
+    closeDb().then(() => {
+      process.exit(0);
+    });
   });
 });
