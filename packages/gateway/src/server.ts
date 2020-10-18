@@ -5,8 +5,8 @@ import { ApolloGateway } from '@apollo/gateway';
 // your implementing service names and URLs
 const gateway = new ApolloGateway({
   serviceList: [
-    { name: 'mflex', url: 'http://localhost:8001/graphql' },
-    { name: 'swapi', url: 'http://localhost:8002/graphql' },
+    { name: 'mflex', url: 'http://localhost:8000/graphql' },
+    //  { name: 'swapi', url: 'http://localhost:8002/graphql' },
   ],
 });
 
