@@ -1,8 +1,7 @@
 import express, { Request, Response } from 'express';
 import { Server } from 'http';
-import { ApolloServer } from 'apollo-server-express';
 import { connectDb, closeDb } from './db';
-import schema from './graphql';
+import { graphqlServer } from './graphql';
 
 import pkg from '../package.json';
 
@@ -14,11 +13,6 @@ app.get('/', (req: Request, res: Response) => {
     version: pkg.version,
     name: pkg.name,
   });
-});
-
-// Create the Apollo Graphql server
-const graphqlServer = new ApolloServer({
-  schema,
 });
 
 // Attach graphql to express
