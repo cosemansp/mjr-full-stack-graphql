@@ -1,5 +1,7 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/camelcase */
 import { gql } from 'apollo-server';
-import { MovieModel, IMovie } from '../../models';
+import { MovieModel, CommentModel, IMovie, IComment } from '../../models';
 import { Resolvers, Movie } from '../types';
 
 // Schema
@@ -9,25 +11,26 @@ const typeDefs = gql`
     title: String
     plot: String
     released: DateTime
+    comments: [Comment!]!
   }
   extend type Query {
     movies(limit: Int, offset: Int): [Movie!]!
   }
 `;
 
-const movieMapper = (model: IMovie): Movie => {
-  return {
-    ...model,
-  };
-};
-
 // Resolvers
 const resolvers: Resolvers = {
   Query: {
     movies: async (_root, args) => {
-      console.log(args);
-      const movies = await MovieModel.find({}).skip(args.offset).limit(args.limit).lean<IMovie>();
-      return movies.map((item) => movieMapper(item));
+      const movies = await MovieModel.find().skip(args.offset).limit(args.limit).lean<IMovie>();
+      return movies as any;
+    },
+  },
+  Movie: {
+    comments: async (movie) => {
+      // console.log('movie', movie.id);
+      const comments = await CommentModel.find({ movie_id: movie.id }).lean<IComment>();
+      return comments;
     },
   },
 };

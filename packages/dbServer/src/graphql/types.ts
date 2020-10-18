@@ -30,12 +30,21 @@ export type QueryMoviesArgs = {
   offset?: Maybe<Scalars['Int']>;
 };
 
+export type Comment = {
+  __typename?: 'Comment';
+  name?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  text?: Maybe<Scalars['String']>;
+  date?: Maybe<Scalars['DateTime']>;
+};
+
 export type Movie = {
   __typename?: 'Movie';
   id?: Maybe<Scalars['ID']>;
   title?: Maybe<Scalars['String']>;
   plot?: Maybe<Scalars['String']>;
   released?: Maybe<Scalars['DateTime']>;
+  comments: Array<Comment>;
 };
 
 
@@ -121,6 +130,7 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>;
   Query: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  Comment: ResolverTypeWrapper<Comment>;
   Movie: ResolverTypeWrapper<Movie>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
@@ -133,6 +143,7 @@ export type ResolversParentTypes = {
   String: Scalars['String'];
   Query: {};
   Int: Scalars['Int'];
+  Comment: Comment;
   Movie: Movie;
   ID: Scalars['ID'];
   DateTime: Scalars['DateTime'];
@@ -150,11 +161,20 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   movies?: Resolver<Array<ResolversTypes['Movie']>, ParentType, ContextType, RequireFields<QueryMoviesArgs, never>>;
 };
 
+export type CommentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = {
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  text?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  date?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MovieResolvers<ContextType = any, ParentType extends ResolversParentTypes['Movie'] = ResolversParentTypes['Movie']> = {
   id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   plot?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   released?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -165,6 +185,7 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 export type Resolvers<ContextType = any> = {
   Book?: BookResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Comment?: CommentResolvers<ContextType>;
   Movie?: MovieResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
 };

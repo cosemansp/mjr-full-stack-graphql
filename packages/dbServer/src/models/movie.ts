@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import mongooseLeanId from 'mongoose-lean-id';
 
 export interface IMovie extends Document {
   _id: string;
@@ -23,4 +24,6 @@ const MovieSchema: Schema = new Schema({
   poster: { type: String },
 });
 
-export default mongoose.model<IMovie>('Movie', MovieSchema);
+MovieSchema.plugin(mongooseLeanId);
+
+export const MovieModel = mongoose.model<IMovie>('Movie', MovieSchema);
