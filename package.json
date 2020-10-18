@@ -1,0 +1,15 @@
+{
+  "name": "mjr-full-stack-graphql",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/mjrio/mjr-full-stack-graphql.git",
+  "author": "Peter Cosemans <peter.cosemans@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "lerna": "^3.22.1"
+  },
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}

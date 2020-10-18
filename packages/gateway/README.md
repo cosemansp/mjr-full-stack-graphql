@@ -1,0 +1,36 @@
+# js-node-jest
+
+This is a starter project to get up and running with ES6+ and Babel quick and easy.
+
+More info about this setup can be found [here](https://medium.freecodecamp.org/these-tools-will-help-you-write-clean-code-da4b5401f68e)
+
+## Prerequisites
+
+- [Node 10.x](https://nodejs.org/en/) or higher
+- [Yarn Package Manager](https://yarnpkg.com/en/) (an alternative to npm)
+- [Visual Studio Code](https://code.visualstudio.com/)
+
+## Getting Started
+
+```bash
+# install all dependencies
+$ yarn
+
+# run with auto watch & relaunch
+$ yarn start:watch
+
+# run linter
+$ yarn run lint
+
+# run tests
+$ yarn test
+$ yarn test:watch
+```
+
+## Features
+
+- [x] Basic Node setup with TS transpiling and bundeling
+- [x] Npm Scripts: serve, build, lint, test
+- [x] VSCode recommended extensions and settings for auto save
+- [x] Unit Testing with Jest
+- [x] ES linting with ESLint and [AirBnb Style Guide](https://github.com/airbnb/javascript)
