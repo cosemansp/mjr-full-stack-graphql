@@ -1,4 +1,5 @@
 import { gql } from 'apollo-server';
+import { Resolvers } from '../types';
 
 const books = [
   { title: 'The Awakening', author: 'Kate Chopin' },
@@ -17,9 +18,14 @@ const typeDefs = gql`
   }
 `;
 
-const resolvers = {
+const resolvers: Resolvers = {
   Query: {
-    books: () => books,
+    books: (_root, args, context) => {
+      if (!context.user) {
+        return null;
+      }
+      return books;
+    },
   },
 };
 

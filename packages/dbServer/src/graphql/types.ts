@@ -1,4 +1,5 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import { Context } from './context';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
@@ -32,6 +33,7 @@ export type QueryMoviesArgs = {
 
 export type Comment = {
   __typename?: 'Comment';
+  id?: Maybe<Scalars['ID']>;
   name?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   text?: Maybe<Scalars['String']>;
@@ -131,8 +133,8 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Comment: ResolverTypeWrapper<Comment>;
-  Movie: ResolverTypeWrapper<Movie>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  Movie: ResolverTypeWrapper<Movie>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
@@ -144,24 +146,25 @@ export type ResolversParentTypes = {
   Query: {};
   Int: Scalars['Int'];
   Comment: Comment;
-  Movie: Movie;
   ID: Scalars['ID'];
+  Movie: Movie;
   DateTime: Scalars['DateTime'];
   Boolean: Scalars['Boolean'];
 };
 
-export type BookResolvers<ContextType = any, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = {
+export type BookResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = {
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   author?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   books?: Resolver<Maybe<Array<Maybe<ResolversTypes['Book']>>>, ParentType, ContextType>;
   movies?: Resolver<Array<ResolversTypes['Movie']>, ParentType, ContextType, RequireFields<QueryMoviesArgs, never>>;
 };
 
-export type CommentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = {
+export type CommentResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = {
+  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   text?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -169,7 +172,7 @@ export type CommentResolvers<ContextType = any, ParentType extends ResolversPare
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MovieResolvers<ContextType = any, ParentType extends ResolversParentTypes['Movie'] = ResolversParentTypes['Movie']> = {
+export type MovieResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Movie'] = ResolversParentTypes['Movie']> = {
   id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   plot?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -182,7 +185,7 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
   name: 'DateTime';
 }
 
-export type Resolvers<ContextType = any> = {
+export type Resolvers<ContextType = Context> = {
   Book?: BookResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Comment?: CommentResolvers<ContextType>;
@@ -195,4 +198,4 @@ export type Resolvers<ContextType = any> = {
  * @deprecated
  * Use "Resolvers" root object instead. If you wish to get "IResolvers", add "typesPrefix: I" to your config.
  */
-export type IResolvers<ContextType = any> = Resolvers<ContextType>;
+export type IResolvers<ContextType = Context> = Resolvers<ContextType>;

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { gql } from 'apollo-server';
 import { MovieModel, CommentModel, IMovie, IComment } from '../../models';
-import { Resolvers, Movie } from '../types';
+import { Resolvers } from '../types';
 
 // Schema
 const typeDefs = gql`

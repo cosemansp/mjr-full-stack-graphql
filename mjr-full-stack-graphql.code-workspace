@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "packages/dbServer"
+		},
+		{
+			"path": "packages/gateway"
+		},
+		{
+			"path": "packages/restServer"
+		},
+		{
+			"path": "packages/myApp"
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
+}

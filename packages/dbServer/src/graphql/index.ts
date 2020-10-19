@@ -1,1 +1,1 @@
-export { default as graphqlServer } from './server';
+export { default as graphqlServer } from './graphqlServer';
