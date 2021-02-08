@@ -1,4 +1,6 @@
+import DataLoader from 'dataloader';
 import { Request, Response } from 'express';
+import { ICategory } from '../models';
 
 /*
   {
@@ -16,4 +18,7 @@ export interface Context {
   req: Request;
   res: Response;
   user?: User;
+  loaders: {
+    categories: DataLoader<number, ICategory>;
+  };
 }

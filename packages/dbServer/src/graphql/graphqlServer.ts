@@ -1,10 +1,13 @@
 import { ApolloServer } from 'apollo-server-express';
 import { decode } from 'jsonwebtoken';
 import { Request } from 'express';
+import DataLoader from 'dataloader';
+import keyBy from 'lodash/keyBy';
 
 import { Context, User } from './context';
 
 import schema from './schema';
+import { CategoryModel, ICategory } from '../models';
 
 const verifyAndDecodeToken = (req: Request): User => {
   const { authorization } = req.headers as any;
@@ -23,6 +26,22 @@ const verifyAndDecodeToken = (req: Request): User => {
   }
 };
 
+const createLoaders = () => {
+  return {
+    categories: new DataLoader<number, ICategory[]>(async (ids) => {
+      // load comments
+      const query: unknown = {
+        CategoryID: { $in: ids },
+      };
+      const categories = await CategoryModel.find(query).lean<ICategory>();
+
+      // make sure we return items in the right order
+      const itemsById = keyBy(categories, 'CategoryID');
+      return ids.map((id) => itemsById[id]);
+    }),
+  };
+};
+
 // Create the Apollo Graphql server
 const graphqlServer = new ApolloServer({
   schema,
@@ -32,6 +51,7 @@ const graphqlServer = new ApolloServer({
       req,
       res,
       user,
+      loaders: createLoaders(),
     };
   },
 });

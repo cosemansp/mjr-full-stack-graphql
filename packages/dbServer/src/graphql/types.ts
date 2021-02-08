@@ -22,7 +22,15 @@ export type Book = {
 export type Query = {
   __typename?: 'Query';
   books?: Maybe<Array<Maybe<Book>>>;
+  categories?: Maybe<Array<Maybe<Category>>>;
   movies: Array<Movie>;
+  products?: Maybe<Array<Maybe<Product>>>;
+};
+
+
+export type QueryCategoriesArgs = {
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
 };
 
 
@@ -31,13 +39,17 @@ export type QueryMoviesArgs = {
   offset?: Maybe<Scalars['Int']>;
 };
 
-export type Comment = {
-  __typename?: 'Comment';
+
+export type QueryProductsArgs = {
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+};
+
+export type Category = {
+  __typename?: 'Category';
   id?: Maybe<Scalars['ID']>;
   name?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
-  text?: Maybe<Scalars['String']>;
-  date?: Maybe<Scalars['DateTime']>;
+  description?: Maybe<Scalars['String']>;
 };
 
 export type Movie = {
@@ -46,7 +58,16 @@ export type Movie = {
   title?: Maybe<Scalars['String']>;
   plot?: Maybe<Scalars['String']>;
   released?: Maybe<Scalars['DateTime']>;
-  comments: Array<Comment>;
+};
+
+export type Product = {
+  __typename?: 'Product';
+  id?: Maybe<Scalars['ID']>;
+  name?: Maybe<Scalars['String']>;
+  unitPrice?: Maybe<Scalars['Float']>;
+  unitsInStock?: Maybe<Scalars['Int']>;
+  unitsOnOrder?: Maybe<Scalars['Int']>;
+  category?: Maybe<Category>;
 };
 
 
@@ -132,9 +153,11 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>;
   Query: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  Comment: ResolverTypeWrapper<Comment>;
+  Category: ResolverTypeWrapper<Category>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Movie: ResolverTypeWrapper<Movie>;
+  Product: ResolverTypeWrapper<Product>;
+  Float: ResolverTypeWrapper<Scalars['Float']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
@@ -145,9 +168,11 @@ export type ResolversParentTypes = {
   String: Scalars['String'];
   Query: {};
   Int: Scalars['Int'];
-  Comment: Comment;
+  Category: Category;
   ID: Scalars['ID'];
   Movie: Movie;
+  Product: Product;
+  Float: Scalars['Float'];
   DateTime: Scalars['DateTime'];
   Boolean: Scalars['Boolean'];
 };
@@ -160,15 +185,15 @@ export type BookResolvers<ContextType = Context, ParentType extends ResolversPar
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   books?: Resolver<Maybe<Array<Maybe<ResolversTypes['Book']>>>, ParentType, ContextType>;
+  categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['Category']>>>, ParentType, ContextType, RequireFields<QueryCategoriesArgs, never>>;
   movies?: Resolver<Array<ResolversTypes['Movie']>, ParentType, ContextType, RequireFields<QueryMoviesArgs, never>>;
+  products?: Resolver<Maybe<Array<Maybe<ResolversTypes['Product']>>>, ParentType, ContextType, RequireFields<QueryProductsArgs, never>>;
 };
 
-export type CommentResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = {
+export type CategoryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Category'] = ResolversParentTypes['Category']> = {
   id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  text?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  date?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -177,7 +202,16 @@ export type MovieResolvers<ContextType = Context, ParentType extends ResolversPa
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   plot?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   released?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProductResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = {
+  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  unitPrice?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  unitsInStock?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  unitsOnOrder?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  category?: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -188,8 +222,9 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 export type Resolvers<ContextType = Context> = {
   Book?: BookResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  Comment?: CommentResolvers<ContextType>;
+  Category?: CategoryResolvers<ContextType>;
   Movie?: MovieResolvers<ContextType>;
+  Product?: ProductResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
 };
 
