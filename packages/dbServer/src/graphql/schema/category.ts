@@ -1,10 +1,11 @@
 import { gql } from 'apollo-server';
 import { ICategory, CategoryModel } from '../../models';
+import { categoryMapper } from '../loaders/categoryLoader';
 import { Resolvers } from '../types';
 
 const typeDefs = gql`
-  type Category {
-    id: ID
+  type Category implements Node {
+    id: ID!
     name: String
     description: String
   }
@@ -13,17 +14,6 @@ const typeDefs = gql`
     categories(limit: Int, offset: Int): [Category]
   }
 `;
-
-export const categoryMapper = (category: ICategory) => {
-  if (!category) {
-    return null;
-  }
-  return {
-    id: category.CategoryID.toString(),
-    name: category.CategoryName,
-    description: category.Description,
-  };
-};
 
 const resolvers: Resolvers = {
   Query: {

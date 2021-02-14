@@ -5,6 +5,13 @@ import { Resolvers } from '../types';
 // Root Schema
 const typeDefs = gql`
   scalar DateTime
+
+  type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String
+    endCursor: String
+  }
 `;
 
 // Root Resolvers

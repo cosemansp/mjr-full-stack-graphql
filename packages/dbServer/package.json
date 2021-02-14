@@ -17,13 +17,16 @@
     "@apollo/federation": "^0.20.4",
     "apollo-server": "^2.18.2",
     "apollo-server-express": "^2.18.2",
+    "base64-url": "^2.3.3",
     "dataloader": "^2.0.0",
     "express": "^4.17.1",
     "graphql-scalars": "^1.4.0",
     "jest-extended": "^0.11.2",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20",
+    "mongodb-extended-json": "^1.11.0",
     "mongoose": "^5.10.9",
+    "mongoose-lean-getters": "^0.1.2",
     "mongoose-lean-id": "^0.2.0"
   },
   "devDependencies": {

@@ -13,18 +13,27 @@ export type Scalars = {
   DateTime: Date;
 };
 
-export type Book = {
-  __typename?: 'Book';
-  title?: Maybe<Scalars['String']>;
-  author?: Maybe<Scalars['String']>;
+export type Category = Node & {
+  __typename?: 'Category';
+  id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
 };
 
 export type Query = {
   __typename?: 'Query';
-  books?: Maybe<Array<Maybe<Book>>>;
+  allProducts?: Maybe<Array<Maybe<ProductConnection>>>;
   categories?: Maybe<Array<Maybe<Category>>>;
-  movies: Array<Movie>;
+  node?: Maybe<Node>;
   products?: Maybe<Array<Maybe<Product>>>;
+};
+
+
+export type QueryAllProductsArgs = {
+  after?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['String']>;
+  orderBy?: Maybe<Scalars['String']>;
 };
 
 
@@ -34,9 +43,8 @@ export type QueryCategoriesArgs = {
 };
 
 
-export type QueryMoviesArgs = {
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
+export type QueryNodeArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -45,24 +53,13 @@ export type QueryProductsArgs = {
   offset?: Maybe<Scalars['Int']>;
 };
 
-export type Category = {
-  __typename?: 'Category';
-  id?: Maybe<Scalars['ID']>;
-  name?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
+export type Node = {
+  id: Scalars['ID'];
 };
 
-export type Movie = {
-  __typename?: 'Movie';
-  id?: Maybe<Scalars['ID']>;
-  title?: Maybe<Scalars['String']>;
-  plot?: Maybe<Scalars['String']>;
-  released?: Maybe<Scalars['DateTime']>;
-};
-
-export type Product = {
+export type Product = Node & {
   __typename?: 'Product';
-  id?: Maybe<Scalars['ID']>;
+  id: Scalars['ID'];
   name?: Maybe<Scalars['String']>;
   unitPrice?: Maybe<Scalars['Float']>;
   unitsInStock?: Maybe<Scalars['Int']>;
@@ -70,6 +67,27 @@ export type Product = {
   category?: Maybe<Category>;
 };
 
+export type ProductEdge = {
+  __typename?: 'ProductEdge';
+  node?: Maybe<Product>;
+  cursor: Scalars['String'];
+};
+
+export type ProductConnection = {
+  __typename?: 'ProductConnection';
+  pageInfo: PageInfo;
+  edges?: Maybe<Array<Maybe<ProductEdge>>>;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  hasNextPage: Scalars['Boolean'];
+  hasPreviousPage: Scalars['Boolean'];
+  startCursor?: Maybe<Scalars['String']>;
+  endCursor?: Maybe<Scalars['String']>;
+};
 
 
 
@@ -149,64 +167,59 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  Book: ResolverTypeWrapper<Book>;
+  Category: ResolverTypeWrapper<Category>;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Query: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  Category: ResolverTypeWrapper<Category>;
-  ID: ResolverTypeWrapper<Scalars['ID']>;
-  Movie: ResolverTypeWrapper<Movie>;
+  Node: ResolversTypes['Category'] | ResolversTypes['Product'];
   Product: ResolverTypeWrapper<Product>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
+  ProductEdge: ResolverTypeWrapper<ProductEdge>;
+  ProductConnection: ResolverTypeWrapper<ProductConnection>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
+  PageInfo: ResolverTypeWrapper<PageInfo>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Book: Book;
+  Category: Category;
+  ID: Scalars['ID'];
   String: Scalars['String'];
   Query: {};
   Int: Scalars['Int'];
-  Category: Category;
-  ID: Scalars['ID'];
-  Movie: Movie;
+  Node: ResolversParentTypes['Category'] | ResolversParentTypes['Product'];
   Product: Product;
   Float: Scalars['Float'];
+  ProductEdge: ProductEdge;
+  ProductConnection: ProductConnection;
   DateTime: Scalars['DateTime'];
+  PageInfo: PageInfo;
   Boolean: Scalars['Boolean'];
 };
 
-export type BookResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = {
-  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  author?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  books?: Resolver<Maybe<Array<Maybe<ResolversTypes['Book']>>>, ParentType, ContextType>;
-  categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['Category']>>>, ParentType, ContextType, RequireFields<QueryCategoriesArgs, never>>;
-  movies?: Resolver<Array<ResolversTypes['Movie']>, ParentType, ContextType, RequireFields<QueryMoviesArgs, never>>;
-  products?: Resolver<Maybe<Array<Maybe<ResolversTypes['Product']>>>, ParentType, ContextType, RequireFields<QueryProductsArgs, never>>;
-};
-
 export type CategoryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Category'] = ResolversParentTypes['Category']> = {
-  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MovieResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Movie'] = ResolversParentTypes['Movie']> = {
-  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  plot?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  released?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  allProducts?: Resolver<Maybe<Array<Maybe<ResolversTypes['ProductConnection']>>>, ParentType, ContextType, RequireFields<QueryAllProductsArgs, never>>;
+  categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['Category']>>>, ParentType, ContextType, RequireFields<QueryCategoriesArgs, never>>;
+  node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
+  products?: Resolver<Maybe<Array<Maybe<ResolversTypes['Product']>>>, ParentType, ContextType, RequireFields<QueryProductsArgs, never>>;
+};
+
+export type NodeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
+  __resolveType: TypeResolveFn<'Category' | 'Product', ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
 export type ProductResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = {
-  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   unitPrice?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   unitsInStock?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -215,17 +228,40 @@ export type ProductResolvers<ContextType = Context, ParentType extends Resolvers
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ProductEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ProductEdge'] = ResolversParentTypes['ProductEdge']> = {
+  node?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType>;
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProductConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ProductConnection'] = ResolversParentTypes['ProductConnection']> = {
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['ProductEdge']>>>, ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
 
+export type PageInfoResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = {
+  hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  hasPreviousPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  startCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  endCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = Context> = {
-  Book?: BookResolvers<ContextType>;
-  Query?: QueryResolvers<ContextType>;
   Category?: CategoryResolvers<ContextType>;
-  Movie?: MovieResolvers<ContextType>;
+  Query?: QueryResolvers<ContextType>;
+  Node?: NodeResolvers<ContextType>;
   Product?: ProductResolvers<ContextType>;
+  ProductEdge?: ProductEdgeResolvers<ContextType>;
+  ProductConnection?: ProductConnectionResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
+  PageInfo?: PageInfoResolvers<ContextType>;
 };
 
 
