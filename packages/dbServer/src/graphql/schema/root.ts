@@ -4,6 +4,8 @@ import { Resolvers } from '../types';
 
 // Root Schema
 const typeDefs = gql`
+  directive @isAuthenticated on FIELD | FIELD_DEFINITION
+  directive @hasRole(role: String) on FIELD | FIELD_DEFINITION
   scalar DateTime
 
   type PageInfo {

@@ -4,12 +4,30 @@ import { ICategory, IProduct } from '../models';
 
 /*
   {
-    "authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+    "authorization": "bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDb0RldkNvIiwiaWF0IjoxNjEzMzczNjU5LCJleHAiOjE2NDQ5MDk2NTksImF1ZCI6InNhbXBsZS5jb20iLCJzdWIiOiIzNDkzODQ3MzkiLCJmaXJzdE5hbWUiOiJKb2hubnkiLCJsYXN0TmFtZSI6IlJvY2tldCIsImVtYWlsIjoianJvY2tldEBleGFtcGxlLmNvbSIsInJvbGUiOlsiTWFuYWdlciIsIlByb2plY3QgQWRtaW5pc3RyYXRvciJdfQ.UAI4-en-Pcgl78KesM1QIiSPqljcOZJxme2ZR7RrBVc"
+  }
+
+  {
+    "iss": "CoDevCo",
+    "iat": 1613373659,
+    "exp": 1644909659,
+    "aud": "sample.com",
+    "sub": "349384739",
+    "firstName": "Johnny",
+    "lastName": "Rocket",
+    "email": "jrocket@example.com",
+    "role": [
+        "Manager",
+        "Project Administrator"
+    ]
   }
 */
 
 export interface User {
-  name: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string[];
   sub: string;
   iat: number;
 }

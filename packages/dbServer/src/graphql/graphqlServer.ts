@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApolloServer } from 'apollo-server-express';
 import { decode } from 'jsonwebtoken';
 import { Request } from 'express';
@@ -39,6 +40,7 @@ const graphqlServer = new ApolloServer({
       },
     };
   },
+  tracing: true,
 });
 
 export default graphqlServer;

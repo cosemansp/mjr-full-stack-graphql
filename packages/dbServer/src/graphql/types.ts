@@ -22,18 +22,18 @@ export type Category = Node & {
 
 export type Query = {
   __typename?: 'Query';
-  allProducts?: Maybe<Array<Maybe<ProductConnection>>>;
+  allProducts?: Maybe<ProductConnection>;
   categories?: Maybe<Array<Maybe<Category>>>;
   node?: Maybe<Node>;
   products?: Maybe<Array<Maybe<Product>>>;
+  viewer?: Maybe<User>;
 };
 
 
 export type QueryAllProductsArgs = {
-  after?: Maybe<Scalars['String']>;
   first?: Maybe<Scalars['Int']>;
+  after?: Maybe<Scalars['String']>;
   before?: Maybe<Scalars['String']>;
-  orderBy?: Maybe<Scalars['String']>;
 };
 
 
@@ -87,6 +87,15 @@ export type PageInfo = {
   hasPreviousPage: Scalars['Boolean'];
   startCursor?: Maybe<Scalars['String']>;
   endCursor?: Maybe<Scalars['String']>;
+};
+
+export type User = {
+  __typename?: 'User';
+  id: Scalars['ID'];
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  roles?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 
@@ -180,6 +189,7 @@ export type ResolversTypes = {
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  User: ResolverTypeWrapper<User>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -197,6 +207,7 @@ export type ResolversParentTypes = {
   DateTime: Scalars['DateTime'];
   PageInfo: PageInfo;
   Boolean: Scalars['Boolean'];
+  User: User;
 };
 
 export type CategoryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Category'] = ResolversParentTypes['Category']> = {
@@ -207,10 +218,11 @@ export type CategoryResolvers<ContextType = Context, ParentType extends Resolver
 };
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  allProducts?: Resolver<Maybe<Array<Maybe<ResolversTypes['ProductConnection']>>>, ParentType, ContextType, RequireFields<QueryAllProductsArgs, never>>;
+  allProducts?: Resolver<Maybe<ResolversTypes['ProductConnection']>, ParentType, ContextType, RequireFields<QueryAllProductsArgs, 'first'>>;
   categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['Category']>>>, ParentType, ContextType, RequireFields<QueryCategoriesArgs, never>>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   products?: Resolver<Maybe<Array<Maybe<ResolversTypes['Product']>>>, ParentType, ContextType, RequireFields<QueryProductsArgs, never>>;
+  viewer?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
 };
 
 export type NodeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
@@ -253,6 +265,15 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = Context> = {
   Category?: CategoryResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
@@ -262,6 +283,7 @@ export type Resolvers<ContextType = Context> = {
   ProductConnection?: ProductConnectionResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   PageInfo?: PageInfoResolvers<ContextType>;
+  User?: UserResolvers<ContextType>;
 };
 
 
