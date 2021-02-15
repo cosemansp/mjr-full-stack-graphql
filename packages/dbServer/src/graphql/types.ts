@@ -13,6 +13,8 @@ export type Scalars = {
   DateTime: Date;
 };
 
+
+
 export type Category = Node & {
   __typename?: 'Category';
   id: Scalars['ID'];
@@ -78,6 +80,28 @@ export type ProductConnection = {
   pageInfo: PageInfo;
   edges?: Maybe<Array<Maybe<ProductEdge>>>;
   totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type CreateProductInput = {
+  name?: Maybe<Scalars['String']>;
+  unitPrice?: Maybe<Scalars['Float']>;
+  unitsInStock?: Maybe<Scalars['Int']>;
+  categoryID: Scalars['ID'];
+};
+
+export type CreateProductPayload = {
+  __typename?: 'CreateProductPayload';
+  product?: Maybe<Product>;
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createProduct?: Maybe<CreateProductPayload>;
+};
+
+
+export type MutationCreateProductArgs = {
+  input?: Maybe<CreateProductInput>;
 };
 
 
@@ -186,6 +210,9 @@ export type ResolversTypes = {
   Float: ResolverTypeWrapper<Scalars['Float']>;
   ProductEdge: ResolverTypeWrapper<ProductEdge>;
   ProductConnection: ResolverTypeWrapper<ProductConnection>;
+  CreateProductInput: CreateProductInput;
+  CreateProductPayload: ResolverTypeWrapper<CreateProductPayload>;
+  Mutation: ResolverTypeWrapper<{}>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
@@ -204,11 +231,22 @@ export type ResolversParentTypes = {
   Float: Scalars['Float'];
   ProductEdge: ProductEdge;
   ProductConnection: ProductConnection;
+  CreateProductInput: CreateProductInput;
+  CreateProductPayload: CreateProductPayload;
+  Mutation: {};
   DateTime: Scalars['DateTime'];
   PageInfo: PageInfo;
   Boolean: Scalars['Boolean'];
   User: User;
 };
+
+export type IsAuthenticatedDirectiveArgs = {  };
+
+export type IsAuthenticatedDirectiveResolver<Result, Parent, ContextType = Context, Args = IsAuthenticatedDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type HasRoleDirectiveArgs = {   role?: Maybe<Scalars['String']>; };
+
+export type HasRoleDirectiveResolver<Result, Parent, ContextType = Context, Args = HasRoleDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type CategoryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Category'] = ResolversParentTypes['Category']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -253,6 +291,15 @@ export type ProductConnectionResolvers<ContextType = Context, ParentType extends
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CreateProductPayloadResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CreateProductPayload'] = ResolversParentTypes['CreateProductPayload']> = {
+  product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createProduct?: Resolver<Maybe<ResolversTypes['CreateProductPayload']>, ParentType, ContextType, RequireFields<MutationCreateProductArgs, never>>;
+};
+
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
@@ -281,6 +328,8 @@ export type Resolvers<ContextType = Context> = {
   Product?: ProductResolvers<ContextType>;
   ProductEdge?: ProductEdgeResolvers<ContextType>;
   ProductConnection?: ProductConnectionResolvers<ContextType>;
+  CreateProductPayload?: CreateProductPayloadResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   PageInfo?: PageInfoResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
@@ -292,3 +341,14 @@ export type Resolvers<ContextType = Context> = {
  * Use "Resolvers" root object instead. If you wish to get "IResolvers", add "typesPrefix: I" to your config.
  */
 export type IResolvers<ContextType = Context> = Resolvers<ContextType>;
+export type DirectiveResolvers<ContextType = Context> = {
+  isAuthenticated?: IsAuthenticatedDirectiveResolver<any, any, ContextType>;
+  hasRole?: HasRoleDirectiveResolver<any, any, ContextType>;
+};
+
+
+/**
+ * @deprecated
+ * Use "DirectiveResolvers" root object instead. If you wish to get "IDirectiveResolvers", add "typesPrefix: I" to your config.
+ */
+export type IDirectiveResolvers<ContextType = Context> = DirectiveResolvers<ContextType>;

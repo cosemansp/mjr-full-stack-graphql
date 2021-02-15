@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { gql } from 'apollo-server';
 import { findPaginated } from '../../dbCursor';
+import { fromGlobalId } from '../../globalId';
 import { IProduct, ProductModel, CategoryModel, ICategory } from '../../models';
 import { productMapper, categoryMapper } from '../loaders';
 import { Resolvers } from '../types';
 
 const typeDefs = gql`
+  ## Queries & Types -----------------------------
+
   type Product implements Node {
     id: ID!
     name: String
@@ -38,8 +41,28 @@ const typeDefs = gql`
   }
 
   type Query {
+    # Get all products (simple paging)
     products(limit: Int, offset: Int): [Product]
+
+    # Get all products
     allProducts(first: Int = 10, after: String, before: String): ProductConnection
+  }
+
+  ## Mutations, Input & Types -----------------------------
+
+  input CreateProductInput {
+    name: String
+    unitPrice: Float
+    unitsInStock: Int
+    categoryID: ID!
+  }
+
+  type CreateProductPayload {
+    product: Product
+  }
+
+  type Mutation {
+    createProduct(input: CreateProductInput): CreateProductPayload
   }
 `;
 
@@ -54,6 +77,37 @@ const resolvers: Resolvers = {
         ...args,
         transformResponse: (docs) => docs.map((doc: any) => productMapper(doc)) as any,
       });
+    },
+  },
+  Mutation: {
+    createProduct: async (_root, args): Promise<any> => {
+      // get category
+      const { id: categoryID } = fromGlobalId(args.input.categoryID);
+      const category = await CategoryModel.findOne({ categoryID: +categoryID });
+      if (!category) {
+        throw Error('invalid categoryID');
+      }
+
+      // get last added product (to inc productID)
+      const lastProductAdded = await ProductModel.find({}, { productID: 1, _id: 0 }).sort({ productID: -1 }).limit(1);
+
+      // create product
+      const product = new ProductModel({
+        name: args.input.name,
+        unitPrice: args.input.unitPrice,
+        unitsInStock: args.input.unitsInStock,
+        unitsOnOrder: 0,
+        reorderLevel: 0,
+        discontinued: 0,
+        productID: (lastProductAdded[0]?.productID || 0) + 1,
+        categoryID: category.categoryID,
+        supplierID: null,
+      });
+      await product.save();
+
+      return {
+        product: productMapper(product.toObject()),
+      };
     },
   },
   Product: {

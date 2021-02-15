@@ -12,7 +12,7 @@ export interface ICategory extends Document {
 
 const CategorySchema: Schema = new Schema({
   name: { type: String },
-  categoryId: { type: Number },
+  categoryID: { type: Number },
   description: { type: String },
   kind: { type: String, get: () => 'Category' },
 });
