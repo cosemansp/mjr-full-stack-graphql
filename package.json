@@ -11,5 +11,8 @@
   "private": true,
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "reveal-md": "^5.0.0"
+  }
 }

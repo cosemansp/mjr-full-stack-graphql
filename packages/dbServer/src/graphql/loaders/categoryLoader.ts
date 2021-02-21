@@ -11,10 +11,10 @@ export const categoryMapper = (category: ICategory) => {
   };
 };
 
-export const categoryLoader = new DataLoader<number, ICategory>(async (ids) => {
+export const categoryLoader = new DataLoader<string, ICategory>(async (ids) => {
   // load comments
   const query: unknown = {
-    categoryID: { $in: ids },
+    categoryID: { $in: ids.map((id) => +id) },
   };
   const categories = await CategoryModel.find(query).lean<ICategory>({ getters: true });
   const mapperCategories = categories.map((item) => categoryMapper(item));

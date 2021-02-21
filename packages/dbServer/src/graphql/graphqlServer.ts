@@ -2,11 +2,12 @@
 import { ApolloServer } from 'apollo-server-express';
 import { decode } from 'jsonwebtoken';
 import { Request } from 'express';
+import depthLimit from 'graphql-depth-limit';
 
 import { Context, User } from './context';
 
 import schema from './schema';
-import { categoryLoader, productLoader } from './loaders';
+import { categoryLoader, orderLoader, productLoader, customerLoader } from './loaders';
 
 const verifyAndDecodeToken = (req: Request): User => {
   const { authorization } = req.headers as any;
@@ -37,10 +38,13 @@ const graphqlServer = new ApolloServer({
       loaders: {
         category: categoryLoader,
         product: productLoader,
+        order: orderLoader,
+        customer: customerLoader,
       },
     };
   },
   tracing: true,
+  validationRules: [depthLimit(5)],
 });
 
 export default graphqlServer;

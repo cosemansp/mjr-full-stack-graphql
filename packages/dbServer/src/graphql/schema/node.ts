@@ -19,7 +19,7 @@ const resolvers: Resolvers = {
     node: async (_root, args, context) => {
       const { type, id } = fromGlobalId(args.id);
       if (!context.loaders[type]) return null;
-      return context.loaders[type].load(+id);
+      return context.loaders[type].load(id);
     },
   },
   Node: {

@@ -20,15 +20,18 @@ export type Category = Node & {
   id: Scalars['ID'];
   name?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  products?: Maybe<Array<Maybe<Product>>>;
 };
 
 export type Query = {
   __typename?: 'Query';
   allProducts?: Maybe<ProductConnection>;
   categories?: Maybe<Array<Maybe<Category>>>;
+  customers?: Maybe<Array<Maybe<Customer>>>;
   node?: Maybe<Node>;
+  orders?: Maybe<Array<Maybe<Order>>>;
   products?: Maybe<Array<Maybe<Product>>>;
-  viewer?: Maybe<User>;
+  viewer: User;
 };
 
 
@@ -45,8 +48,20 @@ export type QueryCategoriesArgs = {
 };
 
 
+export type QueryCustomersArgs = {
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+};
+
+
 export type QueryNodeArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryOrdersArgs = {
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
 };
 
 
@@ -55,8 +70,45 @@ export type QueryProductsArgs = {
   offset?: Maybe<Scalars['Int']>;
 };
 
+export type Customer = Node & {
+  __typename?: 'Customer';
+  id: Scalars['ID'];
+  companyName?: Maybe<Scalars['String']>;
+  contactTitle?: Maybe<Scalars['String']>;
+  contactName?: Maybe<Scalars['String']>;
+  address?: Maybe<Address>;
+};
+
 export type Node = {
   id: Scalars['ID'];
+};
+
+export type Order = Node & {
+  __typename?: 'Order';
+  id: Scalars['ID'];
+  orderDate?: Maybe<Scalars['DateTime']>;
+  requiredDate?: Maybe<Scalars['DateTime']>;
+  shippedDate?: Maybe<Scalars['DateTime']>;
+  details?: Maybe<Array<Maybe<OrderDetail>>>;
+  shipAddress?: Maybe<Address>;
+  customer?: Maybe<Customer>;
+};
+
+export type OrderDetail = {
+  __typename?: 'OrderDetail';
+  product?: Maybe<Product>;
+  unitPrice?: Maybe<Scalars['Float']>;
+  quantity?: Maybe<Scalars['Int']>;
+  discount?: Maybe<Scalars['Float']>;
+};
+
+export type Address = {
+  __typename?: 'Address';
+  street?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  region?: Maybe<Scalars['String']>;
+  postalCode?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
 };
 
 export type Product = Node & {
@@ -89,8 +141,20 @@ export type CreateProductInput = {
   categoryID: Scalars['ID'];
 };
 
+export type DisplayableError = {
+  field?: Maybe<Array<Scalars['String']>>;
+  message: Scalars['String'];
+};
+
+export type GenericError = DisplayableError & {
+  __typename?: 'GenericError';
+  field?: Maybe<Array<Scalars['String']>>;
+  message: Scalars['String'];
+};
+
 export type CreateProductPayload = {
   __typename?: 'CreateProductPayload';
+  error?: Maybe<GenericError>;
   product?: Maybe<Product>;
 };
 
@@ -116,9 +180,9 @@ export type PageInfo = {
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
-  firstName?: Maybe<Scalars['String']>;
-  lastName?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  email: Scalars['String'];
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
@@ -205,12 +269,18 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>;
   Query: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  Node: ResolversTypes['Category'] | ResolversTypes['Product'];
-  Product: ResolverTypeWrapper<Product>;
+  Customer: ResolverTypeWrapper<Customer>;
+  Node: ResolversTypes['Category'] | ResolversTypes['Customer'] | ResolversTypes['Order'] | ResolversTypes['Product'];
+  Order: ResolverTypeWrapper<Order>;
+  OrderDetail: ResolverTypeWrapper<OrderDetail>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
+  Address: ResolverTypeWrapper<Address>;
+  Product: ResolverTypeWrapper<Product>;
   ProductEdge: ResolverTypeWrapper<ProductEdge>;
   ProductConnection: ResolverTypeWrapper<ProductConnection>;
   CreateProductInput: CreateProductInput;
+  DisplayableError: ResolversTypes['GenericError'];
+  GenericError: ResolverTypeWrapper<GenericError>;
   CreateProductPayload: ResolverTypeWrapper<CreateProductPayload>;
   Mutation: ResolverTypeWrapper<{}>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
@@ -226,12 +296,18 @@ export type ResolversParentTypes = {
   String: Scalars['String'];
   Query: {};
   Int: Scalars['Int'];
-  Node: ResolversParentTypes['Category'] | ResolversParentTypes['Product'];
-  Product: Product;
+  Customer: Customer;
+  Node: ResolversParentTypes['Category'] | ResolversParentTypes['Customer'] | ResolversParentTypes['Order'] | ResolversParentTypes['Product'];
+  Order: Order;
+  OrderDetail: OrderDetail;
   Float: Scalars['Float'];
+  Address: Address;
+  Product: Product;
   ProductEdge: ProductEdge;
   ProductConnection: ProductConnection;
   CreateProductInput: CreateProductInput;
+  DisplayableError: ResolversParentTypes['GenericError'];
+  GenericError: GenericError;
   CreateProductPayload: CreateProductPayload;
   Mutation: {};
   DateTime: Scalars['DateTime'];
@@ -252,20 +328,60 @@ export type CategoryResolvers<ContextType = Context, ParentType extends Resolver
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  products?: Resolver<Maybe<Array<Maybe<ResolversTypes['Product']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   allProducts?: Resolver<Maybe<ResolversTypes['ProductConnection']>, ParentType, ContextType, RequireFields<QueryAllProductsArgs, 'first'>>;
   categories?: Resolver<Maybe<Array<Maybe<ResolversTypes['Category']>>>, ParentType, ContextType, RequireFields<QueryCategoriesArgs, never>>;
+  customers?: Resolver<Maybe<Array<Maybe<ResolversTypes['Customer']>>>, ParentType, ContextType, RequireFields<QueryCustomersArgs, never>>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
+  orders?: Resolver<Maybe<Array<Maybe<ResolversTypes['Order']>>>, ParentType, ContextType, RequireFields<QueryOrdersArgs, never>>;
   products?: Resolver<Maybe<Array<Maybe<ResolversTypes['Product']>>>, ParentType, ContextType, RequireFields<QueryProductsArgs, never>>;
-  viewer?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  viewer?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+};
+
+export type CustomerResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Customer'] = ResolversParentTypes['Customer']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  companyName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  contactTitle?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  contactName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  address?: Resolver<Maybe<ResolversTypes['Address']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type NodeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'Category' | 'Product', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'Category' | 'Customer' | 'Order' | 'Product', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+};
+
+export type OrderResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Order'] = ResolversParentTypes['Order']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  orderDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  requiredDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  shippedDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  details?: Resolver<Maybe<Array<Maybe<ResolversTypes['OrderDetail']>>>, ParentType, ContextType>;
+  shipAddress?: Resolver<Maybe<ResolversTypes['Address']>, ParentType, ContextType>;
+  customer?: Resolver<Maybe<ResolversTypes['Customer']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type OrderDetailResolvers<ContextType = Context, ParentType extends ResolversParentTypes['OrderDetail'] = ResolversParentTypes['OrderDetail']> = {
+  product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType>;
+  unitPrice?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  quantity?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  discount?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AddressResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Address'] = ResolversParentTypes['Address']> = {
+  street?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  city?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  region?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  postalCode?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  country?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type ProductResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = {
@@ -291,7 +407,20 @@ export type ProductConnectionResolvers<ContextType = Context, ParentType extends
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type DisplayableErrorResolvers<ContextType = Context, ParentType extends ResolversParentTypes['DisplayableError'] = ResolversParentTypes['DisplayableError']> = {
+  __resolveType: TypeResolveFn<'GenericError', ParentType, ContextType>;
+  field?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+};
+
+export type GenericErrorResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GenericError'] = ResolversParentTypes['GenericError']> = {
+  field?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type CreateProductPayloadResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CreateProductPayload'] = ResolversParentTypes['CreateProductPayload']> = {
+  error?: Resolver<Maybe<ResolversTypes['GenericError']>, ParentType, ContextType>;
   product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -314,9 +443,9 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
 
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -324,10 +453,16 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
 export type Resolvers<ContextType = Context> = {
   Category?: CategoryResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Customer?: CustomerResolvers<ContextType>;
   Node?: NodeResolvers<ContextType>;
+  Order?: OrderResolvers<ContextType>;
+  OrderDetail?: OrderDetailResolvers<ContextType>;
+  Address?: AddressResolvers<ContextType>;
   Product?: ProductResolvers<ContextType>;
   ProductEdge?: ProductEdgeResolvers<ContextType>;
   ProductConnection?: ProductConnectionResolvers<ContextType>;
+  DisplayableError?: DisplayableErrorResolvers<ContextType>;
+  GenericError?: GenericErrorResolvers<ContextType>;
   CreateProductPayload?: CreateProductPayloadResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   DateTime?: GraphQLScalarType;

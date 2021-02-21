@@ -9,14 +9,14 @@ import { Resolvers } from '../types';
 const typeDefs = gql`
   type User {
     id: ID!
-    firstName: String
-    lastName: String
-    email: String
+    firstName: String!
+    lastName: String!
+    email: String!
     roles: [String]
   }
 
   extend type Query {
-    viewer: User @isAuthenticated
+    viewer: User! @isAuthenticated
   }
 `;
 

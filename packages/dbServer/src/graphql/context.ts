@@ -1,6 +1,6 @@
 import DataLoader from 'dataloader';
 import { Request, Response } from 'express';
-import { ICategory, IProduct } from '../models';
+import { ICategory, IProduct, IOrder, ICustomer } from '../models';
 
 /*
   {
@@ -37,7 +37,9 @@ export interface Context {
   res: Response;
   user?: User;
   loaders: {
-    category: DataLoader<number, ICategory>;
-    product: DataLoader<number, IProduct>;
+    category: DataLoader<string, ICategory>;
+    product: DataLoader<string, IProduct>;
+    order: DataLoader<string, IOrder>;
+    customer: DataLoader<string, ICustomer>;
   };
 }

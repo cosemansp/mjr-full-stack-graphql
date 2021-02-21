@@ -6,6 +6,67 @@ import { IProduct, ProductModel, CategoryModel, ICategory } from '../../models';
 import { productMapper, categoryMapper } from '../loaders';
 import { Resolvers } from '../types';
 
+/* 
+mutation {
+  createProduct(
+    input: {
+      name: "testProd"
+      unitPrice: 1000
+      unitsInStock: 4
+      categoryID: "cHJvZHVjdDo"
+    }
+  ) {
+    __typename
+    ... on GenericError {
+			field
+      message
+    }
+    ... on CreateProductPayload {
+      product {
+        id
+        name
+        unitPrice
+        unitsInStock
+        unitsOnOrder
+        category {
+          id
+          name
+        }
+      }
+    }
+  }
+}
+
+mutation {
+  createProduct(
+    input: {
+      name: "testProd"
+      unitPrice: 1000
+      unitsInStock: 4
+      categoryID: "Y2F0ZWdvcnk6Mg=="
+    }
+  ) {
+    error {
+      field
+      message
+    }
+      product {
+        id
+        name
+        unitPrice
+        unitsInStock
+        unitsOnOrder
+        category {
+          id
+          name
+        }
+      }
+    }
+  }
+
+
+*/
+
 const typeDefs = gql`
   ## Queries & Types -----------------------------
 
@@ -57,12 +118,25 @@ const typeDefs = gql`
     categoryID: ID!
   }
 
+  interface DisplayableError {
+    field: [String!]
+    message: String!
+  }
+
+  type GenericError implements DisplayableError {
+    field: [String!]
+    message: String!
+  }
+
   type CreateProductPayload {
+    error: GenericError
     product: Product
   }
 
+  ## union CreateProductResult = CreateProductPayload | GenericError
+
   type Mutation {
-    createProduct(input: CreateProductInput): CreateProductPayload
+    createProduct(input: CreateProductInput): CreateProductPayload @hasRole(role: "Manager")
   }
 `;
 
@@ -85,7 +159,19 @@ const resolvers: Resolvers = {
       const { id: categoryID } = fromGlobalId(args.input.categoryID);
       const category = await CategoryModel.findOne({ categoryID: +categoryID });
       if (!category) {
-        throw Error('invalid categoryID');
+        return {
+          product: null,
+          error: {
+            field: ['categoryID'],
+            message: `Invalid or missing categoryID: ${args.input.categoryID}`,
+          },
+        };
+
+        // return {
+        //   __typename: 'GenericError',
+        //   field: ['categoryID'],
+        //   message: `Invalid or missing categoryID: ${args.input.categoryID}`,
+        // };
       }
 
       // get last added product (to inc productID)
@@ -107,14 +193,20 @@ const resolvers: Resolvers = {
 
       return {
         product: productMapper(product.toObject()),
+        error: null,
       };
+
+      // return {
+      //   __typename: 'CreateProductPayload',
+      //   product: productMapper(product.toObject()),
+      // };
     },
   },
   Product: {
-    category: async (product) => {
-      const category = await CategoryModel.findOne({ categoryID: +product.category.id }).lean<ICategory>();
+    category: async (product, args, context) => {
+      // const category = await CategoryModel.findOne({ categoryID: +product.category.id }).lean<ICategory>();
+      const category = (await context.loaders.category.load(+product.category.id)) as any;
       return categoryMapper(category);
-      // return context.loaders.category.load(+product.category.id) as any;
     },
   },
   ProductConnection: {

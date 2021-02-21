@@ -14,10 +14,10 @@ export const productMapper = (source: IProduct) => {
   };
 };
 
-export const productLoader = new DataLoader<number, IProduct>(async (ids) => {
+export const productLoader = new DataLoader<string, IProduct>(async (ids) => {
   // load comments
   const query: unknown = {
-    productID: { $in: ids },
+    productID: { $in: ids.map((id) => +id) },
   };
   const entities = await ProductModel.find(query).lean<IProduct>({ getters: true });
   const mappedEntities = entities.map((item) => productMapper(item));

@@ -8,6 +8,14 @@ const typeDefs = gql`
   directive @hasRole(role: String) on FIELD | FIELD_DEFINITION
   scalar DateTime
 
+  type Address {
+    street: String
+    city: String
+    region: String
+    postalCode: String
+    country: String
+  }
+
   type PageInfo {
     hasNextPage: Boolean!
     hasPreviousPage: Boolean!
