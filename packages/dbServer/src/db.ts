@@ -2,6 +2,8 @@
 import mongoose from 'mongoose';
 // import seed from '../data/seed';
 
+let cnt = 0;
+
 const url = 'mongodb://127.0.0.1/Northwind2';
 const connectDb = async () => {
   const result = await mongoose.connect(url, {
@@ -9,7 +11,8 @@ const connectDb = async () => {
     useUnifiedTopology: true,
   });
   mongoose.set('debug', (collectionName: string, method: string, query: any, doc: any) => {
-    console.log(`${collectionName}.${method}`, JSON.stringify(query), doc);
+    console.log(`${cnt} - ${collectionName}.${method}`, JSON.stringify(query), doc);
+    cnt++;
   });
 
   // seed data

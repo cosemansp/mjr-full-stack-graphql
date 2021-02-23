@@ -1,0 +1,195 @@
+query {
+  viewer {
+    id
+    firstName
+    lastName
+    email
+    roles
+  }
+}
+
+query {
+  categories {
+    id
+    name
+    description
+    products {
+      id
+      name
+    }
+  }
+}
+
+query {
+  products {
+    id
+    name
+    unitPrice
+    unitsInStock
+    unitsOnOrder
+    category {
+      id
+      name
+      description
+    }
+  }
+}
+
+query {
+  orders(limit: 5, offset: 0) {
+    id
+    orderDate
+    shipAddress {
+      street
+      city
+      region
+      postalCode
+      country
+    }
+    customer {
+      companyName
+    }
+    details {
+      product {
+      	id
+        name
+        unitPrice
+        category {
+          name
+        }
+      }
+      unitPrice
+      quantity
+      discount
+    }
+  }
+}
+
+query {
+  allProducts(first: 3) {
+    edges {
+      # product node
+      node {
+        id
+        name
+        unitPrice
+        category {
+          id
+          name
+        }
+      }
+    }
+    # totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
+
+## Nodes
+
+query {
+  order: node(id: "b3JkZXI6MTAyNzE=") {
+    id
+    __typename
+    ... on Order {
+      orderDate
+      customer {
+        companyName
+      }
+      details {
+        product {
+          id
+          name
+          category {
+            id
+            name
+          }
+        }
+        unitPrice
+      }
+    }
+  }
+  product: node(id: "cHJvZHVjdDozMw==") {
+    id
+    __typename
+    ... on Product {
+      id
+      name
+      category {
+        name
+        id
+      }
+    }
+  }
+  customer: node(id: "Y3VzdG9tZXI6QVJPVVQ=") {
+    id
+    __typename
+    ... on Customer {
+      companyName
+    }
+  }
+}
+
+
+# createProduct Mutation
+
+mutation createProductMutation($input: CreateProductInput) {
+  createProduct(input: $input) {
+    error {
+      field
+      message
+    }
+    product {
+      id
+      name
+      unitPrice
+      unitsInStock
+      unitsOnOrder
+      category {
+        id
+        name
+      }
+    }
+  }
+}
+
+mutation createProduct($input: CreateProductInput) {
+  createProduct(input: $input) {
+    __typename
+    ... on CreateProductPayload {
+      product {
+        id
+        name
+        unitPrice
+        unitsInStock
+        unitsOnOrder
+      }
+    }
+    ...on GenericError {
+      field
+      message
+    }
+  }
+}
+
+
+# variables
+
+{
+  "input": {
+	  "name": "testProd", 
+  	"unitPrice": 1000, 
+  	"unitsInStock": 4, 
+  	"categoryID": "Y2F0ZWdvcnk6Mg==" 
+	}
+}
+
+#######
+
+{
+  "authorization": "bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDb0RldkNvIiwiaWF0IjoxNjEzMzczNjU5LCJleHAiOjE2NDQ5MDk2NTksImF1ZCI6InNhbXBsZS5jb20iLCJzdWIiOiIzNDkzODQ3MzkiLCJmaXJzdE5hbWUiOiJKb2hubnkiLCJsYXN0TmFtZSI6IlJvY2tldCIsImVtYWlsIjoianJvY2tldEBleGFtcGxlLmNvbSIsInJvbGUiOlsiTWFuYWdlciIsIlByb2plY3QgQWRtaW5pc3RyYXRvciJdfQ.UAI4-en-Pcgl78KesM1QIiSPqljcOZJxme2ZR7RrBVc"
+}

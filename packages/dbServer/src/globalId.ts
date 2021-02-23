@@ -21,10 +21,17 @@ export function toGlobalId(type: string, id: string | number): string {
  * used to create it.
  */
 export function fromGlobalId(globalId: string) {
-  const unbasedGlobalId = unbase64(globalId);
-  const delimiterPos = unbasedGlobalId?.indexOf(':');
-  return {
-    type: unbasedGlobalId?.substring(0, delimiterPos),
-    id: unbasedGlobalId?.substring(delimiterPos + 1),
-  };
+  try {
+    const unbasedGlobalId = unbase64(globalId);
+    const delimiterPos = unbasedGlobalId?.indexOf(':');
+    if (delimiterPos === -1) {
+      return { type: '', id: '0' };
+    }
+    return {
+      type: unbasedGlobalId?.substring(0, delimiterPos),
+      id: unbasedGlobalId?.substring(delimiterPos + 1),
+    };
+  } catch (err) {
+    return { type: '', id: '0' };
+  }
 }

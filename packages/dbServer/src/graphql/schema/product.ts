@@ -133,7 +133,7 @@ const typeDefs = gql`
     product: Product
   }
 
-  ## union CreateProductResult = CreateProductPayload | GenericError
+  # union CreateProductResult = CreateProductPayload | GenericError
 
   type Mutation {
     createProduct(input: CreateProductInput): CreateProductPayload @hasRole(role: "Manager")
@@ -166,7 +166,6 @@ const resolvers: Resolvers = {
             message: `Invalid or missing categoryID: ${args.input.categoryID}`,
           },
         };
-
         // return {
         //   __typename: 'GenericError',
         //   field: ['categoryID'],
@@ -204,9 +203,9 @@ const resolvers: Resolvers = {
   },
   Product: {
     category: async (product, args, context) => {
-      // const category = await CategoryModel.findOne({ categoryID: +product.category.id }).lean<ICategory>();
-      const category = (await context.loaders.category.load(+product.category.id)) as any;
+      const category = await CategoryModel.findOne({ categoryID: +product.category.id }).lean<ICategory>();
       return categoryMapper(category);
+      // return context.loaders.category.load(product.category.id) as any;
     },
   },
   ProductConnection: {

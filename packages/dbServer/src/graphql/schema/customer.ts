@@ -35,6 +35,8 @@ const typeDefs = gql`
 const resolvers: Resolvers = {
   Query: {
     customers: async (_root, args) => {
+      const obj = {};
+      const x = obj.name.tst;
       const movies = await CustomerModel.find().skip(args.offset).limit(args.limit).lean<ICustomer>();
       return movies.map((item) => customerMapper(item));
     },

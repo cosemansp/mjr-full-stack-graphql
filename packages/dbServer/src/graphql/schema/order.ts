@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { gql } from 'apollo-server';
 import { fromGlobalId } from '../../globalId';
-import { IOrder, OrderModel } from '../../models';
+import { IOrder, IProduct, OrderModel, ProductModel } from '../../models';
 import { customerMapper } from '../loaders';
 import { orderMapper } from '../loaders/orderLoader';
 import { productMapper } from '../loaders/productLoader';
@@ -80,9 +80,9 @@ const resolvers: Resolvers = {
   OrderDetail: {
     product: async (orderDetail, args, context) => {
       const { id } = fromGlobalId(orderDetail.product.id);
-      const product = await context.loaders.product.load(id);
-      // const product = await ProductModel.findOne({ productID: +id }).lean<IProduct>();
+      const product = await ProductModel.findOne({ productID: +id }).lean<IProduct>();
       return productMapper(product) as any;
+      // return context.loaders.product.load(id) as any;
     },
   },
 };
