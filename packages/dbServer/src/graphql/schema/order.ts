@@ -51,10 +51,15 @@ const typeDefs = gql`
     customer: Customer
   }
 
+  "The detail of the order combines the product with the purchase price"
   type OrderDetail {
     product: Product
+
+    "The price or the product on the moment of the order"
     unitPrice: Float
     quantity: Int
+
+    "The given discount on the product"
     discount: Float
   }
 

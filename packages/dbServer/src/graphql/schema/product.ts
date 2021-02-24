@@ -73,6 +73,7 @@ const typeDefs = gql`
   type Product implements Node {
     id: ID!
     name: String
+    price: Int @deprecated(reason: "Use unitPrice")
     unitPrice: Float
     unitsInStock: Int
     unitsOnOrder: Int
